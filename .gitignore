@@ -1,0 +1,6 @@
+*.pyc
+*.env
+tests/*
+.flake8
+.github/*
+*.log
