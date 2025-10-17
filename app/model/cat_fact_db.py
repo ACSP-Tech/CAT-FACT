@@ -2,7 +2,7 @@ import uuid
 from sqlmodel import SQLModel, Field, Column
 from datetime import datetime
 from pydantic import EmailStr
-from sqlalchemy import String, func, DateTime, Integer, desc, Index, Boolean, text
+from sqlalchemy import String, func, DateTime, Boolean, text
 
 class Users(SQLModel, table=True):
     id: str = Field(
@@ -12,7 +12,7 @@ class Users(SQLModel, table=True):
     email: EmailStr = Field(
         sa_column=Column(String, unique=True, nullable=False, index=True)
     )
-    hashed_password: str = Field(
+    stack: str = Field(
         sa_column=Column(String, nullable=False))
     name: str = Field(
         sa_column=Column(String, nullable=False))

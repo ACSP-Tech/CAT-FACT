@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database_setup import init_db
-from .setup_main import configure_cors
+from .setup_main import configure_cors, configure_logging_middleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,3 +19,6 @@ app = FastAPI(
 
 #defining the cors function and any other custom middleware
 configure_cors(app)
+
+# CONFIGURE LOGGING MIDDLEWARE
+configure_logging_middleware(app)
