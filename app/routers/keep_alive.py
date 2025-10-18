@@ -6,7 +6,7 @@ from ..sec import KEEP_ALIVE_TOKEN
 
 router = APIRouter(tags=["Keep Alive"])
 
-@router.post("/internal/keepalive")
+@router.get("/internal/keepalive")
 async def keepalive(session=Depends(get_db)):
     await session.execute(text("SELECT 1"))
     return {"ok": True}
