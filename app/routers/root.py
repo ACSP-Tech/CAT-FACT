@@ -9,7 +9,7 @@ async def root():
     root endpoint
     """
     return {"app_name": "random cat fact",
-            "redoc": "/redoc"}
+            "redoc": "https://acsp-cat-fact.pxxl.click/redoc"}
 
 @router.head("/")
 async def root_head():
