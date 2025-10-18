@@ -1,6 +1,6 @@
 from .general import StrictBaseModel as BaseModel
 from pydantic import EmailStr
-import datetime
+from datetime import datetime
 
 class MeUser(BaseModel):
     email: EmailStr

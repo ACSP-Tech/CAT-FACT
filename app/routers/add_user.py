@@ -54,7 +54,7 @@ async def email_verification(token: str, backgroundtask:BackgroundTasks, session
             detail=str(e)
         )
 
-@router.post("/resend-email", status_code=status.HTTP_201_CREATED, response_model=MessageOut)
+@router.post("/resend-email", status_code=status.HTTP_202_ACCEPTED, response_model=MessageOut)
 async def resend_email(data:Resend, backgroundtask:BackgroundTasks, session=Depends(get_db)):
     """
     step 3: user verification flow(should in case user did not receive verification email, or token expired)

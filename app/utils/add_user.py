@@ -49,7 +49,7 @@ async def send_verification_email(email, token, username):
     <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #4CAF50;">Welcome to ACSPTechAcademy! 🎉</h2>
+                <h2 style="color: #4CAF50;">Welcome to ACSP CAT FACT !</h2>
                 
                 <p>Hi {username},</p>
                 
@@ -175,7 +175,7 @@ async def send_welcome_email(email, username, user_id):
         message = Mail(
             from_email=Email(config('MAIL_FROM_EMAIL'), config('MAIL_FROM_NAME')),
             to_emails=To(email),
-            subject='Verify Your Email - CAT FACT',
+            subject='WELCOME TO CAT FACT',
             html_content=Content("text/html", html_body)
         )
         

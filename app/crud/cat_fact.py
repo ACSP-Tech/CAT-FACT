@@ -2,7 +2,7 @@ from ..model.cat_fact_db import Users
 from fastapi import HTTPException, status
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound
 from sqlmodel import select
-from schema.cat_fact import MeOut, MeUser
+from ..schema.cat_fact import MeOut, MeUser
 from datetime import datetime, timezone
 from ..utils.cat_fact import fetch_cat_fact
 
