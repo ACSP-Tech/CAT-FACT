@@ -42,7 +42,7 @@ async def send_verification_email(email, token, username):
         username: User's name for personalization
     """
     # placeholder for development testing
-    backend_url = "http://127.0.0.1:8000"
+    backend_url = "https://acsp-cat-fact.pxxl.click"
     verification_link = f"{backend_url}/user/verify-email?token={token}"
     
     html_body = f"""
@@ -118,7 +118,7 @@ async def send_welcome_email(email, username, user_id):
         email: User's email
         username: User's name
     """
-    backend_url = "http://127.0.0.1:8000"
+    backend_url = "https://acsp-cat-fact.pxxl.click"
     app_link = f"{backend_url}/user?q={user_id}"
 
     html_body = f"""
