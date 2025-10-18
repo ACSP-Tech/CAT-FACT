@@ -1,5 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
-from .middleware import RequestResponseLoggingMiddleware, PerformanceLoggingMiddleware
+import logging
+import sys
 
 def configure_cors(app):
     """Configure CORS middleware for the FastAPI app."""
@@ -11,18 +12,11 @@ def configure_cors(app):
         allow_headers=["*"],
     )
 
-def configure_logging_middleware(app):
-    """Configure logging middleware for the FastAPI app."""
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True
+)
 
-    # Add performance monitoring middleware
-    app.add_middleware(
-        PerformanceLoggingMiddleware,
-        slow_request_threshold=2.0  # Log requests taking more than 2 seconds
-    )
-
-    # Add request/response logging middleware
-    app.add_middleware(
-        RequestResponseLoggingMiddleware,
-        log_body=False,  # Set to False to avoid logging request/response bodies
-        max_body_size=2048  # Maximum body size to log (2KB)
-    )
+logger = logging.getLogger(__name__)
