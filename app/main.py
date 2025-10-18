@@ -2,19 +2,22 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database_setup import init_db
-from .setup_main import configure_cors, configure_logging_middleware
+from .setup_main import configure_cors, logger
+from .middleware import LoggingMiddleware
 
 #importing router
 from .routers import cat_fact, add_user, root, keep_alive
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Application startup initiated")
     await init_db()
+    logger.info("Database initialized successfully")
     yield
 
 #calling an instance of fast api
 app = FastAPI(
-    title="E-Library API",
+    title="CAT FACT API",
     description="Random Cat Fact Application",
     version="1.0.0",
     lifespan=lifespan
@@ -23,8 +26,8 @@ app = FastAPI(
 #defining the cors function and any other custom middleware
 configure_cors(app)
 
-# CONFIGURE LOGGING MIDDLEWARE
-configure_logging_middleware(app)
+# Add logging middleware
+app.add_middleware(LoggingMiddleware)
 
 #adding router to FastAPI application
 app.include_router(cat_fact.router)
