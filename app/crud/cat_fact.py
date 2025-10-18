@@ -12,7 +12,16 @@ async def get_me(session):
         statement = select(Users).where(Users.role == "superadmin")
         result = await session.execute(statement)
         me = result.scalar_one()
-
+        if not me.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Inactive user, contact support"
+            )
+        if not me.verify:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="please verify your email first"
+            )
         # Generate timestamp
         time = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 
@@ -57,7 +66,16 @@ async def get_user(q, session):
         statement = select(Users).where(Users.id == q)
         result = await session.execute(statement)
         me = result.scalar_one()
-
+        if not me.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Inactive user, contact support"
+            )
+        if not me.verify:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="please verify your email first"
+            )
         # Generate timestamp
         time = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 
