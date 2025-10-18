@@ -7,9 +7,7 @@ from ..sec import KEEP_ALIVE_TOKEN
 router = APIRouter(tags=["Keep Alive"])
 
 @router.post("/internal/keepalive")
-async def keepalive(x_token: str = Header(None), session=Depends(get_db)):
-    if x_token != KEEP_ALIVE_TOKEN:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+async def keepalive(session=Depends(get_db)):
     await session.execute(text("SELECT 1"))
     return {"ok": True}
 
