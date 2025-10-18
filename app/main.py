@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database_setup import init_db
-from .setup_main import configure_cors, logger
+from .setup_main import configure_cors
 from .middleware import LoggingMiddleware
 
 #importing router
@@ -10,9 +10,7 @@ from .routers import cat_fact, add_user, root, keep_alive
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Application startup initiated")
     await init_db()
-    logger.info("Database initialized successfully")
     yield
 
 #calling an instance of fast api
