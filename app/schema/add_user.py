@@ -61,4 +61,10 @@ class Register(BaseModel):
     
 class MessageOut(BaseModel):
     message: str
+
+class Resend(BaseModel):
+    email: EmailStr
+    @field_validator("email")
+    def normalize_email(cls, v: str) -> str:
+        return v.strip().lower()
     

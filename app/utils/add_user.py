@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content
 from decouple import config
+from fastapi import HTTPException, status
 
 sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
 
@@ -95,4 +96,90 @@ async def send_verification_email(email, token, username):
     except Exception as e:
         print(f"Failed to send verification email: {str(e)}")
 
+async def decode_token(token):
+    try:
+        return jwt.decode(token, SECRET_KEY, ALGORITHM)
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired. Please log in again.",
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token. Please log in again.",
+        )
+    
+async def send_welcome_email(email, username, user_id):
+    """
+    Send welcome email after successful verification
+    
+    Args:
+        email: User's email
+        username: User's name
+    """
+    backend_url = "http://127.0.0.1:8000"
+    app_link = f"{backend_url}/user?q={user_id}"
 
+    html_body = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #4CAF50;">Welcome Onboard!</h2>
+                
+                <p>Hi {username},</p>
+                
+                <p>Your email has been verified successfully! You're all set to start using ACSP cat fact. the below is your user_id</p>
+
+                <p>{user_id},</p>
+                
+                <p>Here's what you can do next:</p>
+                <ul>
+                    <li>click on the link below to generate your random cat fact</li>
+                    <li>copy and store your user id somewhere safe</li>
+                    <li>should incase you lose this mail, pass your user_id as a query parameter /user?user_id</li>
+                </ul>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{app_link}" 
+                       style="background-color: #25D366; 
+                              color: white; 
+                              padding: 15px 40px; 
+                              text-decoration: none; 
+                              border-radius: 8px;
+                              display: inline-block;
+                              font-weight: bold;
+                              font-size: 16px;
+                              box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3);">
+                        Click the link to generate your random cat fact!
+                    </a>
+                </div>
+                
+                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">
+                    you can try as many times as you want!
+                </p>
+                
+                <p>Thanks for your interest!</p>
+                
+                <p style="margin-top: 30px;">
+                    Best regards,<br>
+                    <strong>ACSP CAT FACT</strong>
+                </p>
+            </div>
+        </body>
+    </html>
+    """
+    try:
+        print(f"Attempting to send verification email")
+        
+        message = Mail(
+            from_email=Email(config('MAIL_FROM_EMAIL'), config('MAIL_FROM_NAME')),
+            to_emails=To(email),
+            subject='Verify Your Email - CAT FACT',
+            html_content=Content("text/html", html_body)
+        )
+        
+        response = sg.send(message)
+        print("email successfully sent")    
+    except Exception as e:
+        print(f"Failed to send verification email: {str(e)}")
