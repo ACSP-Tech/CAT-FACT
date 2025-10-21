@@ -3,7 +3,7 @@ from ..crud.cat_fact import get_me, get_user
 from ..database_setup import get_db
 from ..schema.cat_fact import MeOut
 
-router = APIRouter(tags=["Add User"])
+router = APIRouter(tags=["Cat Fact"])
 
 @router.get("/me", status_code=status.HTTP_200_OK, response_model=MeOut)
 async def fetch_me(session=Depends(get_db)):
