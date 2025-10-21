@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from .database_setup import init_db
 from .setup_main import configure_cors, register_exception_handlers
 from .middleware import LoggingMiddleware
+from fastapi_pagination import add_pagination
 
 #importing router
 from .routers import cat_fact, add_user, root, keep_alive, string_analysis
@@ -36,3 +37,6 @@ app.include_router(add_user.router)
 app.include_router(root.router)
 app.include_router(keep_alive.router)
 app.include_router(string_analysis.router)
+
+#adding pagination to the app
+add_pagination(app)
