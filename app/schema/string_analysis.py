@@ -38,7 +38,7 @@ class StringQuery(BaseModel):
     contains_character: Optional[str] = None
 
 class StringFil(BaseModel):
-    data: List[StringAnaly]
+    data: List[StringAnaly] = Field(default_factory=list)
     count: int
     filters_applied: Dict[str, Any]
 
@@ -47,6 +47,6 @@ class StringInter(BaseModel):
     parsed_filters: Dict[str, Any]
 
 class StringNat(BaseModel):
-    data: List[StringAnaly]
+    data: List[StringAnaly] = Field(default_factory=list)
     count: int
     interpreted_query: StringInter
