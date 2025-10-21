@@ -2,11 +2,11 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database_setup import init_db
-from .setup_main import configure_cors
+from .setup_main import configure_cors, register_exception_handlers
 from .middleware import LoggingMiddleware
 
 #importing router
-from .routers import cat_fact, add_user, root, keep_alive
+from .routers import cat_fact, add_user, root, keep_alive, string_analysis
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,6 +24,9 @@ app = FastAPI(
 #defining the cors function and any other custom middleware
 configure_cors(app)
 
+#handling validation error
+register_exception_handlers(app)
+
 # Add logging middleware
 app.add_middleware(LoggingMiddleware)
 
@@ -32,3 +35,4 @@ app.include_router(cat_fact.router)
 app.include_router(add_user.router)
 app.include_router(root.router)
 app.include_router(keep_alive.router)
+app.include_router(string_analysis.router)
