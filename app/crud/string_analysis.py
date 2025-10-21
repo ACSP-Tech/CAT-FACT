@@ -98,7 +98,7 @@ async def all_string_fil(is_palindrome, min_length, max_length, word_count, cont
         if not filters:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail= "Invalid query parameter"
+                detail= "Invalid query parameter values or types"
             )
         #select matching fields
         statement = select(StringAnalysis).options(defer(StringAnalysis.updated_at)).where(and_(*filters))
@@ -140,11 +140,11 @@ async def all_string_fil(is_palindrome, min_length, max_length, word_count, cont
 
 async def natural_language_filtering(query, session):
     try:
-        parsed_filters = interpret_natural_language_query(query)
+        parsed_filters = await interpret_natural_language_query(query)
         if not parsed_filters:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail={"detail": "Invalid query parameter"}
+                    detail= "Unable to parse natural language query"
                 )
         result = await all_string_fil(
                 is_palindrome=parsed_filters.get("is_palindrome"),

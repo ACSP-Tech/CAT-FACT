@@ -1,49 +1,56 @@
 import re
+from fastapi import HTTPException, status
 
 async def interpret_natural_language_query(query: str) -> dict:
-    q = query.lower().strip()
-    filters = {}
+    try:
+        q = query.lower().strip()
+        filters = {}
 
-    # Detect "palindromic" or "palindrome"
-    if "palindrom" in q:
-        filters["is_palindrome"] = True
-    else:
-        filters["is_palindrome"] = None
-    # Detect single/multiple words
-    if "single word" in q or "one word" in q:
-        filters["word_count"] = 1
-    elif "two words" in q or "double word" in q:
-        filters["word_count"] = 2
-    elif "word" in q:
-        filters["word_count"] = 3
-    else:
-        filters["word_count"] = None
-    # Detect "longer than X characters"
-    match = re.search(r"longer than (\d+)", q)
-    if match:
-        filters["min_length"] = int(match.group(1)) + 1
-    else:
-        filters["min_length"] = None
+        # Detect "palindromic" or "palindrome"
+        if "palindrom" in q:
+            filters["is_palindrome"] = True
+        else:
+            filters["is_palindrome"] = None
+        # Detect single/multiple words
+        if "single word" in q or "one word" in q:
+            filters["word_count"] = 1
+        elif "two words" in q or "double word" in q:
+            filters["word_count"] = 2
+        elif "word" in q:
+            filters["word_count"] = 3
+        else:
+            filters["word_count"] = None
+        # Detect "longer than X characters"
+        match = re.search(r"longer than (\d+)", q)
+        if match:
+            filters["min_length"] = int(match.group(1)) + 1
+        else:
+            filters["min_length"] = None
 
-    # Detect "shorter than X characters"
-    match = re.search(r"shorter than (\d+)", q)
-    if match:
-        filters["max_length"] = int(match.group(1)) - 1
-    else:
-        filters["max_length"] = None
+        # Detect "shorter than X characters"
+        match = re.search(r"shorter than (\d+)", q)
+        if match:
+            filters["max_length"] = int(match.group(1)) - 1
+        else:
+            filters["max_length"] = None
 
-    # Detect "containing letter/character"
-    match = re.search(r"containing (?:the letter |the character |letter |character )?([a-z])", q)
-    if match:
-        filters["contains_character"] = match.group(1)
-    else:
-        filters["contains_character"] = None
+        # Detect "containing letter/character"
+        match = re.search(r"containing (?:the letter |the character |letter |character )?([a-z])", q)
+        if match:
+            filters["contains_character"] = match.group(1)
+        else:
+            filters["contains_character"] = None
 
-    # Handle "first vowel" heuristic
-    if "first vowel" in q:
-        filters["contains_character"] = "a"  # simple fallback heuristic
+        # Handle "first vowel" heuristic
+        if "first vowel" in q:
+            filters["contains_character"] = "a"  # simple fallback heuristic
 
-    return filters
+        return filters
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            details = "Query parsed but resulted in conflicting filters"
+        )
 
 from fastapi_pagination import Params
 from typing import Annotated

@@ -31,6 +31,25 @@ async def create_string(value:StringBody, session=Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         )
+
+@router.get("/strings/filter-by-natural-language", response_model=StringNat, status_code=status.HTTP_200_OK)
+async def natural_language_filtering_endpoint(
+    query: Optional[str] = Query(None, description="user text to string"),
+    session = Depends(get_db)):
+    """
+    Endpoint to filter by user text
+    - Args:
+        - takes 1 query paramter as string
+    """
+    try:
+        return await natural_language_filtering(query, session)
+    except HTTPException as httpexc:
+        raise httpexc
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
     
 @router.get("/strings/{string_value}", status_code=status.HTTP_200_OK, response_model=StringAnaly)
 async def single_current_string(string_value:str, session=Depends(get_db)):
@@ -127,21 +146,3 @@ async def all_strings_fil_endpoint(
             detail=str(e)
         )
 
-@router.get("/strings/filter-by-natural-language", response_model=StringNat, status_code=status.HTTP_200_OK)
-async def natural_language_filtering_endpoint(
-    query: Optional[str] = Query(None, description="user text to string"),
-    session = Depends(get_db)):
-    """
-    Endpoint to filter by user text
-    - Args:
-        - takes 1 query paramter as string
-    """
-    try:
-        return await natural_language_filtering(query, session)
-    except HTTPException as httpexc:
-        raise httpexc
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
