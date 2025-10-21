@@ -125,7 +125,7 @@ async def all_string_fil(is_palindrome, min_length, max_length, word_count, cont
                 created_at=s.created_at
             )
             for s in old_strings
-        ]
+        ]if old_strings else []
 
         filtered_result = StringFil(
             data = filstring,
